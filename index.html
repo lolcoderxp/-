@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مرکز فرمان عصبی - نسخه لوکس و فوق‌پیشرفته</title>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #030305;
+            --glass-bg: rgba(14, 14, 20, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --glass-border-hover: rgba(168, 85, 247, 0.4);
+            --primary-glow: #a855f7;
+            --secondary-glow: #3b82f6;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --accent-danger: #f43f5e;
+            --accent-success: #10b981;
+            --radius-main: 22px;
+            --radius-card: 16px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+            font-family: 'Vazirmatn', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(168, 85, 247, 0.18) 0%, transparent 60%),
+                radial-gradient(circle at 100% 100%, rgba(59, 130, 246, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 0% 80%, rgba(244, 63, 94, 0.06) 0%, transparent 40%);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px 14px;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 390px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* پروفایل فوق لوکس */
+        .profile-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 10px;
+            padding: 10px 0;
+        }
+
+        .avatar-box {
+            position: relative;
+            width: 86px;
+            height: 86px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
+            cursor: pointer;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+        }
+
+        .avatar-box:hover {
+            transform: scale(1.06) rotate(2deg);
+            box-shadow: 0 0 45px rgba(168, 85, 247, 0.6);
+        }
+
+        .avatar-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--bg-color);
+            background-color: #12121a;
+        }
+
+        .avatar-overlay {
+            position: absolute;
+            inset: 3px;
+            border-radius: 50%;
+            background: rgba(3, 3, 5, 0.82);
+            backdrop-filter: blur(6px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .avatar-box:hover .avatar-overlay {
+            opacity: 1;
+        }
+
+        .avatar-overlay svg {
+            width: 20px;
+            height: 20px;
+            stroke: #fff;
+            fill: none;
+            stroke-width: 2;
+        }
+
+        .avatar-overlay span {
+            font-size: 8px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .app-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #fff, var(--text-muted));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .app-subtitle {
+            font-size: 11px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            background-color: var(--accent-success);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-success);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 14px var(--accent-success); }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        /* پنل اصلی شیشه‌ای */
+        .settings-panel {
+            background-color: var(--glass-bg);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid var(--glass-border);
+            border-radius: var(--radius-main);
+            padding: 16px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .option-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .option-group.full-width {
+            grid-column: span 2;
+        }
+
+        .section-label {
+            font-size: 9.5px;
+            color: var(--text-muted);
+            padding: 0 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .inner-card {
+            background: linear-gradient(145deg, rgba(22, 22, 30, 0.6), rgba(10, 10, 15, 0.8));
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-card);
+            overflow: hidden;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .inner-card:hover {
+            border-color: var(--glass-border-hover);
+            box-shadow: 0 6px 22px rgba(168, 85, 247, 0.12);
+            transform: translateY(-1px);
+        }
+
+        .item-btn {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 14px;
+            color: var(--text-main);
+            background-color: transparent;
+            border: none;
+            width: 100%;
+            cursor: pointer;
+            text-align: inherit;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+            transition: background-color 0.2s ease;
+        }
+
+        .inner-card .item-btn:last-child {
+            border-bottom: none;
+        }
+
+        .item-btn:hover {
+            background-color: rgba(168, 85, 247, 0.07);
+        }
+
+        .item-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 11.5px;
+            font-weight: 500;
+        }
+
+        .item-left svg {
+            width: 16px;
+            height: 16px;
+            stroke: var(--primary-glow);
+            fill: none;
+            stroke-width: 2;
+            flex-shrink: 0;
+            filter: drop-shadow(0 0 6px rgba(168, 85, 247, 0.5));
+        }
+
+        .item-right {
+            color: var(--text-muted);
+            font-size: 10.5px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-weight: 500;
+        }
+
+        .arrow-icon {
+            font-size: 13px;
+            color: var(--primary-glow);
+            font-weight: bold;
+            transition: transform 0.2s ease;
+        }
+
+        [dir="rtl"] .arrow-icon {
+            transform: rotate(180deg);
+        }
+
+        .item-btn:hover .arrow-icon {
+            transform: scale(1.1);
+        }
+        [dir="rtl"] .item-btn:hover .arrow-icon {
+            transform: rotate(180deg) scale(1.1);
+        }
+
+        .danger-card {
+            border-color: rgba(244, 63, 94, 0.2);
+            background: linear-gradient(145deg, rgba(35, 14, 20, 0.6), rgba(15, 8, 12, 0.8));
+        }
+
+        .danger-card:hover {
+            border-color: rgba(244, 63, 94, 0.5);
+            box-shadow: 0 6px 22px rgba(244, 63, 94, 0.15);
+        }
+
+        .danger-card .item-left svg {
+            stroke: var(--accent-danger);
+            filter: drop-shadow(0 0 6px rgba(244, 63, 94, 0.5));
+        }
+
+        .danger-card .item-btn {
+            color: var(--accent-danger);
+        }
+
+        .desc-text {
+            padding: 10px 14px;
+            font-size: 10.5px;
+            color: var(--text-muted);
+            line-height: 1.5;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        /* مودال مینیمال مدرن */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(2, 2, 4, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            padding: 16px;
+            animation: fadeInModal 0.25s ease;
+        }
+
+        @keyframes fadeInModal {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: linear-gradient(145deg, #12121c, #0a0a10);
+            border: 1px solid rgba(168, 85, 247, 0.25);
+            padding: 22px 18px;
+            border-radius: 24px;
+            width: 100%;
+            max-width: 330px;
+            text-align: center;
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.95), 0 0 35px rgba(168, 85, 247, 0.12);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            transform: scale(0.92);
+            animation: scaleModal 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes scaleModal {
+            to { transform: scale(1); }
+        }
+
+        .modal-content h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 2px 8px rgba(168, 85, 247, 0.4);
+        }
+
+        .modal-content p {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .modal-options-list {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            width: 100%;
+            max-height: 220px;
+            overflow-y: auto;
+            padding: 2px;
+        }
+
+        .modal-options-list::-webkit-scrollbar {
+            width: 3px;
+        }
+        .modal-options-list::-webkit-scrollbar-thumb {
+            background: rgba(168, 85, 247, 0.4);
+            border-radius: 3px;
+        }
+
+        .option-select-btn {
+            background-color: rgba(255, 255, 255, 0.02);
+            color: var(--text-main);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            padding: 11px 14px;
+            border-radius: 12px;
+            font-size: 12px;
+            cursor: pointer;
+            text-align: inherit;
+            width: 100%;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .option-select-btn:hover {
+            background-color: rgba(168, 85, 247, 0.12);
+            border-color: rgba(168, 85, 247, 0.35);
+            color: #fff;
+        }
+
+        .option-select-btn.selected {
+            background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
+            color: #fff;
+            border-color: transparent;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.35);
+        }
+
+        .modal-close-btn {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary-glow), var(--secondary-glow));
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 14px rgba(168, 85, 247, 0.4);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            margin-top: 2px;
+        }
+
+        .modal-close-btn:hover {
+            transform: scale(1.1) rotate(6deg);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- بخش پروفایل -->
+    <div class="profile-section">
+        <div class="avatar-box" onclick="document.getElementById('hidden-file-input').click()">
+            <svg id="avatar-display" class="avatar-img" viewBox="0 0 24 24" fill="#888"><path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z"/></svg>
+            <div class="avatar-overlay">
+                <svg viewBox="0 0 24 24"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                <span data-key="edit-photo">ویرایش تصویر</span>
+            </div>
+        </div>
+        <input type="file" id="hidden-file-input" accept="image/*" style="display:none" onchange="handleImageUpload(event)">
+        <h1 class="app-title" data-key="main-title">مرکز فرمان هوش مصنوعی</h1>
+        <p class="app-subtitle"><span class="status-dot"></span><span data-key="main-subtitle">سیستم عصبی فعال و بهینه</span></p>
+    </div>
+
+    <!-- پنل اصلی تنظیمات -->
+    <div class="settings-panel">
+        <div class="grid-2col">
+            <!-- آیتم ۱ -->
+            <div class="option-group">
+                <div class="section-label" data-key="sec-lang">زبان و منطقه</div>
+                <div class="inner-card">
+                    <button class="item-btn" onclick="openModal('language')">
+                        <div class="item-left"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg><span data-key="lbl-lang">زبان سیستم</span></div>
+                        <div class="item-right"><span id="val-language">فارسی</span><span class="arrow-icon">›</span></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- آیتم ۲ -->
+            <div class="option-group">
+                <div class="section-label" data-key="sec-core">هسته عصبی</div>
+                <div class="inner-card">
+                    <button class="item-btn" onclick="openModal('model')">
+                        <div class="item-left"><svg viewBox="0 0 24 24"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg><span data-key="lbl-model">مدل هوش</span></div>
+                        <div class="item-right"><span id="val-model">پیشرفته</span><span class="arrow-icon">›</span></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- آیتم ۳ -->
+            <div class="option-group">
+                <div class="section-label" data-key="sec-persona">دستورالعمل</div>
+                <div class="inner-card">
+                    <button class="item-btn" onclick="openModal('persona')">
+                        <div class="item-left"><svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg><span data-key="lbl-persona">پرسونا</span></div>
+                        <div class="item-right"><span id="val-persona">سایبرنتیک</span><span class="arrow-icon">›</span></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- آیتم ۴ -->
+            <div class="option-group">
+                <div class="section-label" data-key="sec-temp">خلاقیت پایه</div>
+                <div class="inner-card">
+                    <button class="item-btn" onclick="openModal('temperature')">
+                        <div class="item-left"><svg viewBox="0 0 24 24"><path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z"></path></svg><span data-key="lbl-temp">حرارت</span></div>
+                        <div class="item-right"><span id="val-temperature">۰.۷</span><span class="arrow-icon">›</span></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- آیتم ۵ -->
+            <div class="option-group">
+                <div class="section-label" data-key="sec-memory">حافظه برداری</div>
+                <div class="inner-card">
+                    <button class="item-btn" onclick="openModal('memory')">
+                        <div class="item-left"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path></svg><span data-key="lbl-memory">همگام‌سازی</span></div>
+                        <div class="item-right"><span id="val-memory">کامل</span><span class="arrow-icon">›</span></div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- آیتم ۶ -->
+            <div class="option-group">
+                <div class="section-label" data-key="sec-tokens">سقف توکن</div>
+                <div class="inner-card">
+                    <button class="item-btn" onclick="openModal('tokens')">
+                        <div class="item-left"><svg viewBox="0 0 24 24"><path d="M12 20V10M18 20V4M6 20v-4"></path></svg><span data-key="lbl-tokens">ظرفیت</span></div>
+                        <div class="item-right"><span id="val-tokens">۸,۱۹۲</span><span class="arrow-icon">›</span></div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- صوت -->
+        <div class="option-group full-width">
+            <div class="section-label" data-key="sec-audio">جریان صوتی عصبی</div>
+            <div class="inner-card">
+                <button class="item-btn" onclick="openModal('audio')">
+                    <div class="item-left"><svg viewBox="0 0 24 24"><path d="M12 1v22M17 5v14M7 8v8M22 10v4M2 10v4"></path></svg><span data-key="lbl-audio">پروفایل صوتی و سنتز گفتار</span></div>
+                    <div class="item-right"><span id="val-audio">نووا</span><span class="arrow-icon">›</span></div>
+                </button>
+                <div class="desc-text" data-key="desc-audio">سیستم تبدیل متن به گفتار بلادرنگ و با تأخیر فوق‌العاده پایین فعال است.</div>
+            </div>
+        </div>
+
+        <!-- امنیت و اسناد -->
+        <div class="option-group full-width">
+            <div class="section-label" data-key="sec-security">امنیت و مستندات</div>
+            <div class="inner-card">
+                <button class="item-btn" onclick="openModal('security')">
+                    <div class="item-left"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg><span data-key="lbl-security">رمزنگاری و پایداری سیستم</span></div>
+                    <div class="item-right">AES-256<span class="arrow-icon">›</span></div>
+                </button>
+                <button class="item-btn" onclick="openModal('docs')">
+                    <div class="item-left"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg><span data-key="lbl-docs">اسناد و راهنمای توسعه‌دهندگان</span></div>
+                    <div class="item-right"><span class="arrow-icon">›</span></div>
+                </button>
+                <button class="item-btn" onclick="openModal('support')">
+                    <div class="item-left"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg><span data-key="lbl-support">پشتیبانی و درخواست‌های فنی</span></div>
+                    <div class="item-right"><span class="arrow-icon">›</span></div>
+                </button>
+            </div>
+        </div>
+
+        <!-- ریست سیستم -->
+        <div class="option-group full-width">
+            <div class="inner-card danger-card">
+                <button class="item-btn" onclick="openModal('reset')">
+                    <div class="item-left"><svg viewBox="0 0 24 24"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"></path><line x1="12" y1="2" x2="12" y2="12"></line></svg><span data-key="lbl-reset">پاکسازی حافظه و ریست محیط کاربری</span></div>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ساختار پنجره پاپ‌آپ (مودال) -->
+<div class="modal-overlay" id="custom-modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <h3 id="modal-title"></h3>
+        <p id="modal-desc"></p>
+        <div class="modal-options-list" id="modal-options-container"></div>
+        <button class="modal-close-btn" data-key="btn-close" onclick="closeModal()">بستن</button>
+    </div>
+</div>
+
+<script>
+    const dictionary = {
+        fa: {
+            dir: "rtl",
+            code: "fa",
+            "edit-photo": "ویرایش تصویر",
+            "main-title": "مرکز فرمان هوش مصنوعی",
+            "main-subtitle": "سیستم عصبی فعال و بهینه",
+            "sec-lang": "زبان و منطقه",
+            "lbl-lang": "زبان سیستم",
+            "sec-core": "هسته عصبی",
+            "lbl-model": "مدل هوش",
+            "sec-persona": "دستورالعمل",
+            "lbl-persona": "پرسونا",
+            "sec-temp": "خلاقیت پایه",
+            "lbl-temp": "حرارت",
+            "sec-memory": "حافظه برداری",
+            "lbl-memory": "همگام‌سازی",
+            "sec-tokens": "سقف توکن",
+            "lbl-tokens": "ظرفیت",
+            "sec-audio": "جریان صوتی عصبی",
+            "lbl-audio": "پروفایل صوتی و سنتز گفتار",
+            "desc-audio": "سیستم تبدیل متن به گفتار بلادرنگ و با تأخیر فوق‌العاده پایین فعال است.",
+            "sec-security": "امنیت و مستندات",
+            "lbl-security": "رمزنگاری و پایداری سیستم",
+            "lbl-docs": "اسناد و راهنمای توسعه‌دهندگان",
+            "lbl-support": "پشتیبانی و درخواست‌های فنی",
+            "lbl-reset": "پاکسازی حافظه و ریست محیط کاربری",
+            "btn-close": "بستن",
+            modals: {
+                language: { title: "انتخاب زبان", desc: "زبان رابط کاربری سیستم را انتخاب کنید:", options: ["فارسی", "انگلیسی", "عربی"] },
+                model: { title: "انتخاب مدل عصبی", desc: "هسته پردازشگر زبان هوش مصنوعی را تعیین کنید:", options: ["پیشرفته", "حرفه‌ای", "ماتریکس", "توربو"] },
+                persona: { title: "دستورالعمل سیستمی", desc: "پرسونا و رفتار پایه هوش مصنوعی را انتخاب کنید:", options: ["سایبرنتیک", "مینیمال", "سقراطی", "امنیت ارشد"] },
+                temperature: { title: "شاخص خلاقیت", desc: "میزان تصادفی بودن خروجی پاسخ‌ها:", options: ["۰.۲ (دقیق)", "۰.۷ (متعادل)", "۱.۲ (خلاقانه)", "۱.۸ (ماتریس)"] },
+                memory: { title: "حافظه برداری", desc: "تنظیمات ذخیره‌سازی تاریخچه مکالمات بلندمدت:", options: ["کامل", "پنجره متحرک", "فقط نشست فعلی"] },
+                tokens: { title: "محدودیت توکن", desc: "سقف تولید توکن در هر مرحله پاسخ‌دهی:", options: ["۴,۰۹۶", "۸,۱۹۲", "۱۶,۳۸۴", "۳۲,۷۶۸"] },
+                audio: { title: "پروفایل صوتی", desc: "انتخاب لحن صدای سنتزکننده صوتی:", options: ["نووا", "اکو", "آلوی", "فبل"] },
+                security: { title: "وضعیت امنیت", desc: "تمام گره‌های پردازشی با پایداری ۹۹.۹۹٪ فعال و امن‌اند.", options: ["انجام بررسی جامع سیستم"] },
+                docs: { title: "اسناد توسعه‌دهندگان", desc: "دسترسی به راهنماهای ساختار پرامپت‌ها و مستندات برنامه‌نویسی SDK.", options: ["باز کردن پورتال مستندات API"] },
+                support: { title: "پشتیبانی فنی", desc: "ارتباط با تیم پشتیبانی مرکزی و ارسال گزارش وضعیت:", options: ["ارسال تیکت پشتیبانی جدید", "بررسی وضعیت سرورها", "درخواست راهنمایی فوری"] },
+                reset: { title: "پاکسازی سیستم", desc: "هشدار: تمام حافظه زمینه، کش و لاگ‌های سیستم پاک خواهند شد.", options: ["تأیید و پاکسازی نهایی"] }
+            }
+        },
+        en: {
+            dir: "ltr",
+            code: "en",
+            "edit-photo": "Edit Photo",
+            "main-title": "AI Command Center",
+            "main-subtitle": "Neural System Active & Optimized",
+            "sec-lang": "Language & Region",
+            "lbl-lang": "System Language",
+            "sec-core": "Neural Core",
+            "lbl-model": "Model Engine",
+            "sec-persona": "Instructions",
+            "lbl-persona": "Persona",
+            "sec-temp": "Creativity",
+            "lbl-temp": "Temperature",
+            "sec-memory": "Vector Memory",
+            "lbl-memory": "Sync Status",
+            "sec-tokens": "Token Limit",
+            "lbl-tokens": "Max Output",
+            "sec-audio": "Neural Audio",
+            "lbl-audio": "Audio Profile & TTS",
+            "desc-audio": "Real-time, ultra-low latency text-to-speech system is active.",
+            "sec-security": "Security & Docs",
+            "lbl-security": "Encryption & Stability",
+            "lbl-docs": "Developer Documentation",
+            "lbl-support": "Support & Technical Requests",
+            "lbl-reset": "Clear Memory & Reset Workspace",
+            "btn-close": "Close",
+            modals: {
+                language: { title: "Select Language", desc: "Choose your interface language:", options: ["Persian", "English", "Arabic"] },
+                model: { title: "Select Neural Model", desc: "Choose the core language engine:", options: ["Advanced", "Professional", "Matrix", "Turbo"] },
+                persona: { title: "System Instructions", desc: "Define AI behavior and persona:", options: ["Cybernetic", "Minimalist", "Socratic", "Security Arch"] },
+                temperature: { title: "Creativity Index", desc: "Control response randomness:", options: ["0.2 (Precise)", "0.7 (Balanced)", "1.2 (Creative)", "1.8 (Matrix)"] },
+                memory: { title: "Vector Memory", desc: "Long-term history storage settings:", options: ["Full", "Sliding Window", "Current Session"] },
+                tokens: { title: "Token Limit", desc: "Maximum token generation per response:", options: ["4,096", "8,192", "16,384", "32,768"] },
+                audio: { title: "Audio Profile", desc: "Select speech synthesizer tone:", options: ["Nova", "Echo", "Alloy", "Fable"] },
+                security: { title: "System Status", desc: "All processing nodes operational at 99.99% stability.", options: ["Comprehensive System Check"] },
+                docs: { title: "Developer Documentation", desc: "Access prompt structure guides and SDK documentation.", options: ["Open API Portal"] },
+                support: { title: "Support & Requests", desc: "Connect with the central support team:", options: ["Submit New Support Ticket", "Check Server Status", "Request Live Assistance"] },
+                reset: { title: "Clear System Memory", desc: "Warning: All context memory and logs will be cleared.", options: ["Confirm & Clean"] }
+            }
+        },
+        ar: {
+            dir: "rtl",
+            code: "ar",
+            "edit-photo": "تعدیل الصورة",
+            "main-title": "مركز قيادة الذكاء الاصطناعي",
+            "main-subtitle": "النظام العصبي نشط ومحسن",
+            "sec-lang": "اللغة والمنطقة",
+            "lbl-lang": "لغة النظام",
+            "sec-core": "النموذج العصبي",
+            "lbl-model": "محرك النموذج",
+            "sec-persona": "الإرشادات",
+            "lbl-persona": "الشخصية",
+            "sec-temp": "الإبداع",
+            "lbl-temp": "درجة الحرارة",
+            "sec-memory": "ذاكرة المتجهات",
+            "lbl-memory": "المزامنة",
+            "sec-tokens": "الرموز",
+            "lbl-tokens": "حد الإخراج",
+            "sec-audio": "دفق الصوت العصبي",
+            "lbl-audio": "الملف الصوتي وتوليد الكلام",
+            "desc-audio": "نظام تحويل النص إلى كلام في الوقت الفعلي بزمن وصول منخفض للغاية نشط.",
+            "sec-security": "الأمان والوثائق",
+            "lbl-security": "التشفير واستقرار النظام",
+            "lbl-docs": "وثائق المطورين",
+            "lbl-support": "الدعم والطلبات الفنية",
+            "lbl-reset": "مسح الذاكرة وإعادة تعيين المساحة",
+            "btn-close": "إغلاق",
+            modals: {
+                language: { title: "اختر اللغة", desc: "اختر لغة واجهة المستخدم الخاصة بك:", options: ["الفارسية", "الإنجليزية", "العربية"] },
+                model: { title: "اختر النموذج العصبي", desc: "حدد محرك معالجة اللغة للذكاء الاصطناعي:", options: ["متقدم", "محترف", "ماتريكس", "توربو"] },
+                persona: { title: "إرشادات النظام", desc: "حدد سلوك الذكاء الاصطناعي والشخصية الأساسية:", options: ["سيبراني", "مبسط", "سقراطي", "أمان أول"] },
+                temperature: { title: "مؤشر الإبداع", desc: "التحكم في عشوائية استجابة المخرجات:", options: ["0.2 (دقيق)", "0.7 (متوازن)", "1.2 (إبداعي)", "1.8 (مصفوفة)"] },
+                memory: { title: "ذاكرة المتجهات", desc: "إعدادات تخزين السجل طويل الأجل للمحادثات:", options: ["كامل", "نافذة منزلقة", "الجلسة الحالية"] },
+                tokens: { title: "حد الرموز", desc: "الحد الأقصى لتوليد الرموز في كل مرحلة استجابة:", options: ["4,096", "8,192", "16,384", "32,768"] },
+                audio: { title: "الملف الصوتي", desc: "اختر نبرة مُصنّع الصوت:", options: ["نوفا", "إيكو", "ألوي", "فيبل"] },
+                security: { title: "التشخيص والأمان", desc: "جميع عقد المعالجة تعمل باستقرار 99.99٪ وآمنة.", options: ["إجراء فحص شامل للنظام"] },
+                docs: { title: "وثائق المطورين", desc: "الوصول إلى أدلة هيكل الإرشادات ووثائق البرمجة SDK.", options: ["فتح بوابة وثائق API"] },
+                support: { title: "الدعم والطلبات الفنية", desc: "التواصل مع فريق الدعم المركزي وإرسال التقارير:", options: ["إرسال تذكرة دعم جديدة", "التحقق من حالة الخوادم", "طلب مساعدة فورية"] },
+                reset: { title: "مسح ذاكرة النظام", desc: "تحذير: سيتم مسح كافة الذاكرة المؤقتة وسجلات النظام.", options: ["تأكيد والتنظيف النهائي"] }
+            }
+        }
+    };
+
+    let currentLang = 'fa';
+
+    function setLanguage(langCode) {
+        currentLang = langCode;
+        let data = dictionary[langCode];
+        document.documentElement.setAttribute('dir', data.dir);
+        document.documentElement.setAttribute('lang', data.code);
+
+        document.querySelectorAll('[data-key]').forEach(el => {
+            let key = el.getAttribute('data-key');
+            if (data[key]) {
+                el.innerText = data[key];
+            }
+        });
+
+        const langMap = { fa: "فارسی", en: "English", ar: "العربية" };
+        document.getElementById('val-language').innerText = langMap[langCode];
+    }
+
+    function openModal(type) {
+        let modalData = dictionary[currentLang].modals[type];
+        document.getElementById('modal-title').innerText = modalData.title;
+        document.getElementById('modal-desc').innerText = modalData.desc;
+
+        let optionsHTML = '';
+        modalData.options.forEach(opt => {
+            let valEl = document.getElementById('val-' + type);
+            let currentVal = valEl ? valEl.innerText : '';
+            let isSelected = (opt === currentVal) ? 'selected' : '';
+            optionsHTML += `<button class="option-select-btn ${isSelected}" onclick="selectOption('${type}', '${opt}')"><span>${opt}</span> ${isSelected ? '✓' : ''}</button>`;
+        });
+
+        document.getElementById('modal-options-container').innerHTML = optionsHTML;
+        document.getElementById('custom-modal').style.display = 'flex';
+    }
+
+    function selectOption(type, value) {
+        if (type === 'language') {
+            let mapping = { 'فارسی': 'fa', 'Persian': 'fa', 'الفارسية': 'fa', 'انگلیسی': 'en', 'English': 'en', 'عربی': 'ar', 'Arabic': 'ar' };
+            setLanguage(mapping[value] || 'fa');
+        } else {
+            let valEl = document.getElementById('val-' + type);
+            if (valEl) {
+                valEl.innerText = value;
+            }
+        }
+        closeModal();
+    }
+
+    function closeModal() {
+        document.getElementById('custom-modal').style.display = 'none';
+    }
+
+    function handleImageUpload(event) {
+        let file = event.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('avatar-display').outerHTML = `<img id="avatar-display" class="avatar-img" src="${e.target.result}">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+</body>
+</html>
